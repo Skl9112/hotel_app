@@ -1,0 +1,74 @@
+-- Создание таблиц
+CREATE TABLE Categories (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    description TEXT NOT NULL
+);
+
+CREATE TABLE Rooms (
+    id SERIAL PRIMARY KEY,
+    category_id INT NOT NULL REFERENCES Categories(id),
+    capacity INT NOT NULL,
+    comfort_level VARCHAR(50) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    photo_url TEXT
+);
+
+CREATE TABLE Clients (
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    phone VARCHAR(15) NOT NULL,
+    email VARCHAR(100)
+);
+
+CREATE TABLE Bookings (
+    id SERIAL PRIMARY KEY,
+    room_id INT NOT NULL REFERENCES Rooms(id),
+    client_id INT NOT NULL REFERENCES Clients(id),
+    check_in_date DATE NOT NULL,
+    check_out_date DATE NOT NULL,
+    total_price DECIMAL(10, 2) NOT NULL,
+    has_children BOOLEAN NOT NULL
+);
+
+CREATE TABLE Payments (
+    id SERIAL PRIMARY KEY,
+    booking_id INT NOT NULL REFERENCES Bookings(id),
+    payment_date DATE NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL
+);
+
+-- Вставка тестовых данных
+INSERT INTO Categories (name, description) VALUES
+('Economy', 'Номера с базовыми удобствами для бюджетного отдыха'),
+('Standard', 'Стандартные номера с комфортом для семейного отдыха'),
+('Luxury', 'Роскошные номера с дополнительными услугами');
+
+INSERT INTO Rooms (category_id, capacity, comfort_level, price, photo_url) VALUES
+(1, 2, 'Basic', 150.00, 'economy1.jpg'),
+(2, 4, 'Comfortable', 300.00, 'standard1.jpg'),
+(3, 2, 'Premium', 500.00, 'luxury1.jpg'),
+(2, 3, 'Comfortable', 350.00, 'standard2.jpg'),
+(1, 1, 'Basic', 120.00, 'economy2.jpg');
+
+INSERT INTO Clients (first_name, last_name, phone, email) VALUES
+('Ivan', 'Ivanov', '+375295432100', 'ivanov@mail.com'),
+('Anna', 'Petrova', '+375296543211', 'petrova@mail.com'),
+('Petr', 'Sidorov', '+375446543212', 'sidorov@mail.com'),
+('Olga', 'Nikolaeva', '+375296543213', 'nikolaeva@mail.com'),
+('Sergey', 'Volkov', '+375446543214', 'volkov@mail.com');
+
+INSERT INTO Bookings (room_id, client_id, check_in_date, check_out_date, total_price, has_children) VALUES
+(1, 1, '2024-01-01', '2024-01-07', 1050.00, FALSE),
+(2, 2, '2024-02-01', '2024-02-10', 3000.00, TRUE),
+(3, 3, '2024-03-01', '2024-03-05', 2500.00, FALSE),
+(4, 4, '2024-04-10', '2024-04-15', 1750.00, TRUE),
+(5, 5, '2024-05-01', '2024-05-03', 360.00, FALSE);
+
+INSERT INTO Payments (booking_id, payment_date, amount) VALUES
+(1, '2024-01-01', 1050.00),
+(2, '2024-02-01', 3000.00),
+(3, '2024-03-01', 2500.00),
+(4, '2024-04-10', 1750.00),
+(5, '2024-05-01', 360.00);
